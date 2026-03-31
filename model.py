@@ -79,15 +79,6 @@ class CBAMBlock(nn.Module):
 def drop_path(x: torch.Tensor, drop_prob: float, training: bool) -> torch.Tensor:
     if drop_prob == 0.0 or not training:
         return x
-    keep = 1 - drop_prob
-    shape = (x.shape[0],) + (1,) * (x.ndim - 1)
-    mask = torch.rand(shape, dtype=x.dtype, device=x.device).floor_(mask := torch.rand(shape, dtype=x.dtype, device=x.device) + keep) / keep
-    return x * mask
-
-
-def drop_path(x: torch.Tensor, drop_prob: float, training: bool) -> torch.Tensor:
-    if drop_prob == 0.0 or not training:
-        return x
     keep_prob = 1.0 - drop_prob
     shape = (x.shape[0],) + (1,) * (x.ndim - 1)
     rand_tensor = torch.rand(shape, dtype=x.dtype, device=x.device)

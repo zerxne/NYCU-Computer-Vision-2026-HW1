@@ -20,7 +20,7 @@ class ImageDataset(Dataset):
         self.samples = []
         classes = sorted(
             [d for d in os.listdir(root) if os.path.isdir(os.path.join(root, d))],
-            key=lambda x: int(x),
+            key=lambda x: int(x) if x.isdigit() else x,
         )
         self.class_to_idx = {c: int(c) for c in classes}
         for cls in classes:

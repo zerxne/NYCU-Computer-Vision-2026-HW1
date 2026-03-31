@@ -3,6 +3,7 @@ import argparse
 import random
 import time
 import numpy as np
+import pandas as pd
 
 import torch
 import torch.nn as nn
@@ -213,6 +214,7 @@ def parse_args():
     p.add_argument("--save_dir", default="./checkpoints")
     p.add_argument("--resume", default="")
     p.add_argument("--seed", type=int, default=42)
+    p.add_argument("--clip_grad", type=float, default=5.0)
     return p.parse_args()
 
 
@@ -340,12 +342,12 @@ def main():
         if args.use_sam:
             tr_loss, tr_top1, _ = train_sam(
                 model, train_loader, optimizer, criterion, device, ema,
-                args.mixup_prob, clip_grad=5.0,
+                args.mixup_prob, clip_grad=args.clip_grad,
             )
         else:
             tr_loss, tr_top1, _ = train_adamw(
                 model, train_loader, optimizer, criterion, device, ema,
-                scaler, args.mixup_prob, clip_grad=5.0,
+                scaler, args.mixup_prob, clip_grad=args.clip_grad,
             )
 
         val_loss, val_top1, val_top5 = validate(
@@ -390,13 +392,12 @@ def main():
             os.path.join(args.save_dir, f"latest_{args.model}.pth"),
         )
         
-    history.append({
-        'epoch': epoch + 1,
-        'train_loss': tr_loss,
-        'val_acc': val_top1
-    })
+        history.append({
+            'epoch': epoch + 1,
+            'train_loss': tr_loss,
+            'val_acc': val_top1
+        })
     
-    import pandas as pd
     log_filename = os.path.join(args.save_dir, f"train_log_{args.img_size}.csv")
     pd.DataFrame(history).to_csv(log_filename, index=False)
 
