@@ -66,4 +66,4 @@ pip install -r requirements.txt
 ---
 
 ## Performance Snapshot
-![alt text](image.png)
+<img width="1013" height="137" alt="image" src="https://github.com/user-attachments/assets/99851d99-b2d0-4650-8138-5e2855de1459" />
